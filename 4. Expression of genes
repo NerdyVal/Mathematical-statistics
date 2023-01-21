@@ -1,0 +1,37 @@
+!# python
+import pandas as pd
+import scipy.stats as stat
+import matplotlib.pyplot as plt
+import multipy.fwer
+
+df = pd.read_csv('data.csv', header=None)
+
+normal_reaction = list()
+severe_reaction = list()
+t_statistic = dict()
+p_value = list()
+# with open('two-sample-t-test-for-each-gene-output.txt', 'w', encoding="utf-8") as f:
+for i in range(len(df)):
+    for j in range(len(df.columns)):
+        if j < 44:
+            normal_reaction.append(df[j][i])
+        else:
+            severe_reaction.append(df[j][i])
+
+    test = stat.ttest_ind(normal_reaction, severe_reaction)
+    p_value.append(test[1])
+
+    # try:
+    #     if t_statistic[test[0].round(1)]:
+    #         t_statistic[test[0].round(1)] = t_statistic[test[0].round(1)] + 1
+    # except KeyError as e:
+    #     t_statistic[test[0].round(1)] = 1
+        # print(test[0].round(1))
+        # f.write(str(i + 1) + ' gene t-statistic: ' + str(test[0]) + ', p-value: ' + str(test[1]) + '\n')
+
+
+# plt.bar(t_statistic.keys(), t_statistic.values())
+# plt.show()
+
+significant_pvals = multipy.fwer.bonferroni(p_value, alpha=0.05)
+print(zip(['{:.4f}'.format(p) for p in p_value], significant_pvals))
