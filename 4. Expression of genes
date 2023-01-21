@@ -1,4 +1,4 @@
-!# python
+#! python
 import pandas as pd
 import scipy.stats as stat
 import matplotlib.pyplot as plt
